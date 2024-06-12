@@ -42,7 +42,9 @@ class CoordenadasMock(CoordenadasStrategy):
     def obtener_coordenadas(self, ciudad):
         mock_data = {
             "Lima": Coordenada(-12.1, -77.0),
-            "Cusco": Coordenada(-13.5, -72)
+            "Cusco": Coordenada(-13.5, -72),
+            "Arequipa": Coordenada(-15.4,-71.5)
+        
         }
         return mock_data.get(ciudad.nombre_ciudad)
 
@@ -69,6 +71,7 @@ class ObtenerCoordenadas:
 def main():
     ciudad1 = Ciudad("Lima", "Peru")
     ciudad2 = Ciudad("Cusco", "Peru")
+    ciudad3 = Ciudad("Arequipa", "Peru")
 
     strategies = {
         1: CoordenadasDesdeCSV('worldcities.csv'),
@@ -86,10 +89,24 @@ def main():
     coordenadas = ObtenerCoordenadas(coordenadas_strategy)
     coord1 = coordenadas.obtener_coordenadas(ciudad1)
     coord2 = coordenadas.obtener_coordenadas(ciudad2)
+    coord3 = coordenadas.obtener_coordenadas(ciudad3)
     
     if coord1 and coord2:
-        distancia = calcular_distancia(coord1, coord2)
-        print(f"La distancia entre {ciudad1.nombre_ciudad} y {ciudad2.nombre_ciudad} es {distancia:.2f} km.")
+        #calculate distances between the 3 cities and return the smallest
+        dist1 = calcular_distancia(coord1, coord2)
+        dist2 = calcular_distancia(coord1, coord3)
+        dist3 = calcular_distancia(coord2, coord3)
+
+        if dist1<dist2 and dist1<dist3:
+            l_city1, l_city2 = ciudad1, ciudad2
+            distancia = dist1
+        elif dist2<dist3 and dist2<dist1:
+            l_city1, l_city2 = ciudad1, ciudad3
+            distancia = dist2
+        else:
+            l_city1, l_city2 = ciudad1, ciudad2
+            distancia = dist3
+        print(f"La menor distancia entre ambas ciudades es {l_city1.nombre_ciudad} y {l_city2.nombre_ciudad} es {distancia:.2f} km.")
     else:
         print("No se pudieron obtener las coordenadas de una o ambas ciudades.")
 
